@@ -178,7 +178,7 @@ def visualize_data(name, x, y, w_perc=None, w_ada=None):
         plt.plot([-(b * top + c) / a, -(b * bottom + c) / a], [top, bottom], 'y', label='Adaline decision line')
     plt.legend()
     plt.title(name + ' dataset')
-    plt.savefig(path.join(output_dir, 'data_visualization_{}_dataset.png'.format(name)))
+    plt.savefig(path.join(output_dir, 'data_visualization_{}_dataset.png'.format(name.replace(' ', '_'))))
 
 
 def train_on_all_data_and_return_weights_dict(clf_type, x, y):
