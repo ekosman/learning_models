@@ -9,3 +9,7 @@ The file contains two comparisons on 2 types of datasets, as you can see in the 
 ![](graphs/data_visualization_adaline_friendly_dataset.png)
 
 ![](graphs/data_visualization_perceptron_friendly_dataset.png)
+
+## Perceptron
+
+![ChessUrl](additional_imgs/convergence.gif)
