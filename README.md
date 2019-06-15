@@ -12,4 +12,4 @@ The file contains two comparisons on 2 types of datasets, as you can see in the 
 
 ## Perceptron
 
-![ChessUrl](additional_imgs/convergence.gif)
+![ChessUrl](additional_imgs/convergence_inftyloop.gif)
