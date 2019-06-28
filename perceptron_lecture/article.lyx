@@ -1,0 +1,1588 @@
+#LyX 2.3 created this file. For more info see http://www.lyx.org/
+\lyxformat 544
+\begin_document
+\begin_header
+\save_transient_properties true
+\origin unavailable
+\textclass apa6
+\options jou
+\use_default_options false
+\begin_modules
+natbibapa
+\end_modules
+\maintain_unincluded_children false
+\begin_local_layout
+Style Journal
+LatexName             journal
+LatexType             Command
+#	InTitle               0
+InPreamble            1
+End
+\end_local_layout
+\language english
+\language_package default
+\inputencoding auto
+\fontencoding global
+\font_roman "default" "default"
+\font_sans "default" "default"
+\font_typewriter "default" "default"
+\font_math "auto" "auto"
+\font_default_family default
+\use_non_tex_fonts false
+\font_sc false
+\font_osf false
+\font_sf_scale 100 100
+\font_tt_scale 100 100
+\use_microtype false
+\use_dash_ligatures false
+\graphics default
+\default_output_format default
+\output_sync 0
+\bibtex_command bibtex
+\index_command default
+\paperfontsize default
+\spacing single
+\use_hyperref false
+\papersize default
+\use_geometry false
+\use_package amsmath 1
+\use_package amssymb 1
+\use_package cancel 1
+\use_package esint 1
+\use_package mathdots 1
+\use_package mathtools 1
+\use_package mhchem 1
+\use_package stackrel 1
+\use_package stmaryrd 1
+\use_package undertilde 1
+\cite_engine natbib
+\cite_engine_type authoryear
+\biblio_style plainnat
+\use_bibtopic false
+\use_indices false
+\paperorientation portrait
+\suppress_date false
+\justification true
+\use_refstyle 1
+\use_minted 0
+\index Index
+\shortcut idx
+\color #008000
+\end_index
+\secnumdepth 3
+\tocdepth 3
+\paragraph_separation indent
+\paragraph_indentation default
+\is_math_indent 0
+\math_numbering_side default
+\quotes_style english
+\dynamic_quotes 0
+\papercolumns 1
+\papersides 1
+\paperpagestyle default
+\tracking_changes false
+\output_changes false
+\html_math_output 0
+\html_css_as_file 0
+\html_be_strict false
+\end_header
+
+\begin_body
+
+\begin_layout Title
+The Perceptron
+\begin_inset Note Note
+status open
+
+\begin_layout Plain Layout
+Warning: Don't force a newline in manuscript mode.
+ It won't compile.
+ If you want to in jou or doc mode, that's fine.
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout ShortTitle
+Short Title of Paper
+\end_layout
+
+\begin_layout Author
+Eitan Kosman
+\end_layout
+
+\begin_layout LeftHeader
+Eitan Kosman
+\begin_inset Note Note
+status open
+
+\begin_layout Plain Layout
+The left header is used for the author's last name(s), and appears on even-page
+ headers in jou mode.
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Affiliation
+The Technion
+\begin_inset Newline newline
+\end_inset
+
+Department of Computer Science
+\end_layout
+
+\begin_layout Abstract
+The perceptron is an algorithm designed to solve the problem of learning
+ binary classifiers.
+ Bach in time, the Perceptron was considered a very powerfull tool since
+ it could automatically learn a predictor function for any two linearly
+ separable sets.
+\end_layout
+
+\begin_layout Section
+The Problem
+\end_layout
+
+\begin_layout Standard
+Before showing the Perceptron algorithm, I would like to shortly introduce
+ the problem we try to solve.
+ Given a set of 
+\begin_inset Formula $n$
+\end_inset
+
+ points in 
+\begin_inset Formula $\mathbb{R}^{d}$
+\end_inset
+
+ with binary labels:
+\begin_inset Formula 
+\[
+X=\{x_{i}|i\in[n],x\in\mathbb{R}^{d}\}
+\]
+
+\end_inset
+
+
+\begin_inset Formula 
+\[
+Y=\{y_{i}|i\in[n],y_{i}\in\{-1,1\}\}
+\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+we want to find a transformation 
+\begin_inset Formula $f:X\to Y$
+\end_inset
+
+ so that 
+\begin_inset Formula $x_{i}\mapsto_{f}y_{i}$
+\end_inset
+
+.
+ In the following picture you can see an example for this problem where
+ 
+\begin_inset Formula $X$
+\end_inset
+
+ is the set of the drawn points in 
+\begin_inset Formula $\mathbb{R}^{2}$
+\end_inset
+
+ and the two colors represent two different classes.
+\end_layout
+
+\begin_layout Standard
+\begin_inset Graphics
+	filename pasted1.png
+	scale 30
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Subsection
+Definition (1) - Linear Separability
+\end_layout
+
+\begin_layout Standard
+Let 
+\begin_inset Formula $X_{0},X_{1}\subseteq\mathbb{R}^{d}$
+\end_inset
+
+ be two sets of points.
+ 
+\begin_inset Formula $X_{0},X_{1}$
+\end_inset
+
+ are linearly separable if there exist 
+\begin_inset Formula $n+1$
+\end_inset
+
+ real numbers 
+\begin_inset Formula $w_{1},w_{2},...,w_{n},k$
+\end_inset
+
+ such that:
+\begin_inset Formula $\forall x\in X_{0}:\sum_{i=1}^{n}w_{i}x_{i}>k$
+\end_inset
+
+, 
+\begin_inset Formula $\forall x\in X_{1}:\sum_{i=1}^{n}w_{i}x_{i}<k$
+\end_inset
+
+.
+ These terms could also be written as the inner product 
+\begin_inset Formula $\langle w,x\rangle$
+\end_inset
+
+ where 
+\begin_inset Formula $w=(w_{1},w_{2},...,w_{n})$
+\end_inset
+
+ and 
+\begin_inset Formula $x=(x_{1},x_{2},...,x_{n})$
+\end_inset
+
+.
+ This way, we can treat it as a hyper-plane: 
+\begin_inset Formula $\langle w,x\rangle-k=0$
+\end_inset
+
+ that separates the vector space intro two regions such that all points
+ belong to 
+\begin_inset Formula $X_{0}$
+\end_inset
+
+ are in one region and all points belong to 
+\begin_inset Formula $X_{1}$
+\end_inset
+
+ are in the other region.
+ In 
+\begin_inset Formula $\mathbb{R}^{2}$
+\end_inset
+
+, this hyper-place would be a straight line that for our example would look
+ like the blue line in the following picture:
+\end_layout
+
+\begin_layout Standard
+\begin_inset Graphics
+	filename pasted3.png
+	scale 30
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Subsection
+Definition (2) - Linear Separability
+\end_layout
+
+\begin_layout Standard
+Let 
+\begin_inset Formula $X_{0},X_{1}\subseteq\mathbb{R}^{d}$
+\end_inset
+
+ be two sets of points.
+ 
+\begin_inset Formula $X_{0},X_{1}$
+\end_inset
+
+ are linearly separable precisely when their repective convex hulls are
+ disjoint (do not overlap)
+\end_layout
+
+\begin_layout Standard
+\begin_inset Note Note
+status collapsed
+
+\begin_layout Plain Layout
+Unlike the original apa class, the apa6 class does not override whatever
+ citation style is listed in the bibliography.
+ However, for compliance with apa6, you should set the style to apacite.
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Graphics
+	filename pasted4.png
+	lyxscale 30
+	display false
+	scale 30
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Section
+The Bioligical Neuron
+\end_layout
+
+\begin_layout Subsection
+Structure
+\end_layout
+
+\begin_layout Standard
+Like any other body cell, the neuron has a cell body which contains a nucleus
+ where the DNA is stored.
+ From our perspective, the interesting parts are: Dendrites – make connections
+ with tens of thousand of other cells; other neurons.
+ The behave as “inputs”.
+ Axon – transmits information to different neurons, muscles, and other body
+ cells based on the signals the cell receives.
+ It’s signals are received by other cells’ dendrites.
+\end_layout
+
+\begin_layout Standard
+\begin_inset Graphics
+	filename pasted5.png
+	scale 30
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Subsection
+Mathematical model of the neuron cel
+\end_layout
+
+\begin_layout Standard
+Mathematicians try to model various phenomenas that happen in our world.
+ For the neuron, the model suggested for the neuron is that given an input
+ vector 
+\begin_inset Formula $x$
+\end_inset
+
+:
+\end_layout
+
+\begin_layout Itemize
+\begin_inset Formula $x$
+\end_inset
+
+ will be the inputs of the neuron (dendrites)
+\end_layout
+
+\begin_layout Itemize
+Define a weight, 
+\begin_inset Formula $w_{i}$
+\end_inset
+
+, for each input 
+\begin_inset Formula $x_{i}$
+\end_inset
+
+, and sum all the multiplications.
+\end_layout
+
+\begin_layout Itemize
+Output the result at 
+\begin_inset Formula $\hat{y}$
+\end_inset
+
+ (Axon)
+\end_layout
+
+\begin_layout Standard
+This model scheme is shown more clearly in the following picture, However,
+ there's still a problem - How do we find the weights?
+\end_layout
+
+\begin_layout Standard
+\begin_inset Graphics
+	filename pasted6.png
+	scale 30
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Section
+The Solution
+\end_layout
+
+\begin_layout Subsection
+Prehistory
+\end_layout
+
+\begin_layout Standard
+In 1943, W.S.
+ McCulloch & W.
+ Pitts published their article: “A logical calculus of the ideas immanent
+ in nervous activity”.
+ This paper pointed out that simple artificial “neurons” could be made to
+ perform basic logical operations such as AND, OR and NOT.
+ The citation from the abstract shows that notes that clearly: Because of
+ the “all-or-none” character of nervous activity, neural events and the
+ relations among them can be treated by means of propositional logic
+\begin_inset Quotes erd
+\end_inset
+
+.
+ They also attempted to demonstrate that a Turing machine program could
+ be implemented in a finite network of formal neurons, the base logic unit
+ of the brain.
+ Another achievement is showing that any complex and dynamic neural network
+ with delays (that occur when transferring signals with chemicals thru the
+ synapse, or because of poor conductivity of the axon) has an equivalent
+ network of logical units which computes the same function.
+\end_layout
+
+\begin_layout Standard
+In this context, we want to represent the logical units by the mathematical
+ model proposed for the neuron.
+ A simple solution for it is:
+\end_layout
+
+\begin_layout Standard
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+$$ OR(x,y) = 
+\backslash
+left
+\backslash
+{ 
+\backslash
+begin{array}{rl} 0 &
+\backslash
+mbox{ $x+y-1<0$} 
+\backslash
+
+\backslash
+ 1 &
+\backslash
+mbox{ otherwise} 
+\backslash
+end{array} 
+\backslash
+right.
+ $$
+\end_layout
+
+\begin_layout Plain Layout
+
+$$ AND(x,y) = 
+\backslash
+left
+\backslash
+{ 
+\backslash
+begin{array}{rl} 0 &
+\backslash
+mbox{ $x+y-1.5<0$} 
+\backslash
+
+\backslash
+ 1 &
+\backslash
+mbox{ otherwise} 
+\backslash
+end{array} 
+\backslash
+right.
+ $$
+\end_layout
+
+\begin_layout Plain Layout
+
+$$ NOT(x) = -x $$
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+The weights for the model will be the coefficients of the variables.
+ In the OR example, we can define 
+\begin_inset Formula $w=(1,1),k=1$
+\end_inset
+
+ and therefore 
+\begin_inset Formula $k$
+\end_inset
+
+ means 
+\begin_inset Quotes eld
+\end_inset
+
+at least one input is on
+\begin_inset Quotes erd
+\end_inset
+
+.
+ for the AND example we can define 
+\begin_inset Formula $w=(1,1),k=1.5$
+\end_inset
+
+ and thefre 
+\begin_inset Quotes eld
+\end_inset
+
+at least two inputs are on
+\begin_inset Quotes erd
+\end_inset
+
+.
+\end_layout
+
+\begin_layout Subsection
+Eliminating 
+\begin_inset Formula $k$
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+The goal is to find a hyper-place separating two known classes.
+ Consider definition (1) for linear separability: 
+\begin_inset Formula $\forall x\in X_{0}:\langle w,x\rangle>k,\forall x\in X_{1}:\langle w,x\rangle<k$
+\end_inset
+
+.
+ By subtracting 
+\begin_inset Formula $k$
+\end_inset
+
+ for both sides we get: 
+\begin_inset Formula $\forall x\in X_{0}:\langle w,x\rangle-k>0,\forall x\in X_{1}:\langle w,x\rangle-k<0$
+\end_inset
+
+.
+\end_layout
+
+\begin_layout Standard
+Important feature of those expressions is that we can eliminate 
+\begin_inset Formula $k$
+\end_inset
+
+ by augmenting representation with one dimension: 
+\begin_inset Formula $x'=(x,1),w'=(w,-x)$
+\end_inset
+
+ and therefore we get: 
+\begin_inset Formula $\langle w',x'\rangle=(w,-k)(\begin{array}{c}
+x\\
+1
+\end{array})=wx-k$
+\end_inset
+
+.
+ In the presentation I added a picture a baby, being happy for this solution.
+\end_layout
+
+\begin_layout Subsection
+The Perceptron algorithm
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula $P\leftarrow$
+\end_inset
+
+ inputs with label +1 (Positive)
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula $N\leftarrow$
+\end_inset
+
+inputs with label -1 (Negative)
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula $w\leftarrow\bar{0}$
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+while a stopping criterion isn't met:
+\end_layout
+
+\begin_layout Standard
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+mbox{~~~~~~} 
+\end_layout
+
+\end_inset
+
+Iterate over all 
+\begin_inset Formula $(x,y)\in X\times Y:$
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+mbox{~~~~~~~~~~~~} 
+\end_layout
+
+\end_inset
+
+
+\begin_inset Formula $\hat{y}=sign(\langle w,x\rangle)$
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+mbox{~~~~~~~~~~~~} 
+\end_layout
+
+\end_inset
+
+if 
+\begin_inset Formula $\hat{y}\ne y:$
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+mbox{~~~~~~~~~~~~~~~~~~} 
+\end_layout
+
+\end_inset
+
+
+\begin_inset Formula $w\leftarrow w+yx$
+\end_inset
+
+
+\end_layout
+
+\begin_layout Subsection
+Building some intuition on the weights update rule
+\end_layout
+
+\begin_layout Standard
+In the presentation I added an example that demonstrates how the weights
+ update rule affects the position of the decision line.
+ The detailed example is in the presentation and doesn't appear here.
+ You can check the additional presentation
+\end_layout
+
+\begin_layout Subsection
+Perceptron's mistake bound theorm
+\end_layout
+
+\begin_layout Standard
+Let 
+\begin_inset Formula $(x_{1},y_{1}),...,(x_{n},y_{n})$
+\end_inset
+
+, where 
+\begin_inset Formula $x_{i}\in\mathbb{R}^{d}$
+\end_inset
+
+ and 
+\begin_inset Formula $y_{i}\in\{-1,1\}$
+\end_inset
+
+ be a sequence of labeled examples and assume it is linearly separable,
+ and denote: 
+\begin_inset Formula $R=max_{i}|x_{i}|$
+\end_inset
+
+.
+\end_layout
+
+\begin_layout Standard
+The set of points is linearly separable, thus there exist 
+\begin_inset Formula $w^{*},\gamma>0$
+\end_inset
+
+ such that 
+\begin_inset Formula $|w^{*}|=1,\forall i:y_{i}w^{*^{T}}x_{i}>=\gamma$
+\end_inset
+
+.
+ The number of mistakes made by the Perceptron algorithm on this sequence
+ of examples is 
+\begin_inset Formula $O((\frac{{R}}{\gamma})^{2})$
+\end_inset
+
+.
+\end_layout
+
+\begin_layout Standard
+Before proving the theorm, lets understand what does 
+\begin_inset Formula $R$
+\end_inset
+
+ and 
+\begin_inset Formula $\gamma$
+\end_inset
+
+ mean.
+ 
+\begin_inset Formula $R=max_{i}|x_{i}|$
+\end_inset
+
+ could be interpreted as the maximum distance of a point from the origin
+ (or the minimum radius of the sphere that contains all the points).
+ 
+\begin_inset Formula $\gamma$
+\end_inset
+
+ could be any positive real number between zero and the distance from the
+ decision line to the closest point.
+\end_layout
+
+\begin_layout Standard
+\begin_inset Graphics
+	filename pasted12.png
+	scale 30
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+
+\bar under
+Proof
+\end_layout
+
+\begin_layout Standard
+Let 
+\begin_inset Formula $w_{0}=\bar{0}$
+\end_inset
+
+ (initial weights vector) and denote 
+\begin_inset Formula $w_{k}$
+\end_inset
+
+ the weights vector after the 
+\begin_inset Formula $k'th$
+\end_inset
+
+ mistake.
+\end_layout
+
+\begin_layout Standard
+
+\bar under
+Lemma 1:
+\bar default
+ 
+\begin_inset Formula $w_{t+1}\cdot w^{*}\geq w_{t}\cdot w^{*}+\gamma$
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+The 
+\begin_inset Formula $t's$
+\end_inset
+
+ update occured when the perceptron made a mistake on sample 
+\begin_inset Formula $(x_{i},y_{i})$
+\end_inset
+
+.
+\end_layout
+
+\begin_layout Standard
+If 
+\begin_inset Formula $y_{i}=1:$
+\end_inset
+
+ 
+\begin_inset Formula $w_{t+1}\cdot w^{*}=(w_{t}+x_{i})\cdot w^{*}=w_{t}\cdot w^{*}+\overset{\geq\gamma}{x_{i}\cdot w^{*}}\geq w_{t}\cdot w^{*}+\gamma$
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+If 
+\begin_inset Formula $y_{i}=-1:$
+\end_inset
+
+ 
+\begin_inset Formula $w_{t+1}\cdot w^{*}=(w_{t}-x_{i})\cdot w^{*}=w_{t}\cdot w^{*}-\overset{\leq-\gamma}{x_{i}\cdot w^{*}}\geq w_{t}\cdot w^{*}+\gamma$
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+
+\bar under
+Lemma 2:
+\bar default
+ 
+\begin_inset Formula $|w_{t+1}|^{2}\leq|w_{t}|^{2}+R^{2}$
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+The 
+\begin_inset Formula $t's$
+\end_inset
+
+ update occured when the perceptron made a mistake on sample 
+\begin_inset Formula $(x_{i},y_{i})$
+\end_inset
+
+.
+\end_layout
+
+\begin_layout Standard
+<0, since a mistake occured
+\end_layout
+
+\begin_layout Standard
+If 
+\begin_inset Formula $y_{i}=1:$
+\end_inset
+
+ 
+\begin_inset Formula $|w_{t+1}|^{2}=|w_{t}+x_{i}|^{2}=|w_{t}|^{2}+2\overset{<0}{w_{t}\cdot x_{i}}+\overset{\leq R^{2}}{|x_{i}|^{2}}\leq|w_{t}|^{2}+R^{2}$
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+If 
+\begin_inset Formula $y_{i}=-1:|w_{t+1}|^{2}=|w_{t}-x_{i}|^{2}=|w_{t}|^{2}-2\overset{>0}{w_{t}\cdot x_{i}}+\overset{\leq R^{2}}{|x_{i}|^{2}}\leq|w_{t}|^{2}+R^{2}$
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Lets head to proving the theorm.
+ I want to prove by induction that 
+\begin_inset Formula $w_{t}\cdot w^{*}\geq\gamma.$
+\end_inset
+
+ From 
+\bar under
+Lemma 1
+\bar default
+ we know that:
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\[
+w_{0}=\bar{0}
+\]
+
+\end_inset
+
+
+\begin_inset Formula 
+\[
+w_{1}\cdot w^{*}\geq w_{0}\cdot w^{*}+\gamma=\gamma
+\]
+
+\end_inset
+
+
+\begin_inset Formula 
+\[
+w_{2}\cdot w^{*}\geq w_{1}\cdot w^{*}+\gamma\geq\gamma+\gamma=2\gamma
+\]
+
+\end_inset
+
+
+\bar under
+Closure
+\bar default
+: Assume 
+\begin_inset Formula $w_{t-1}\cdot w^{*}\geq(t-1)\cdot\gamma,$
+\end_inset
+
+thus 
+\begin_inset Formula $w_{t}\cdot w^{*}\geq w_{t}+\gamma\geq(t-1)\cdot\gamma+\gamma=t\cdot\gamma$
+\end_inset
+
+ (*)
+\end_layout
+
+\begin_layout Standard
+Also, I want to prove by induction that 
+\begin_inset Formula $|w_{t}|^{2}\leq tR^{2}.$
+\end_inset
+
+ From 
+\bar under
+Lemma 2
+\bar default
+ we know that:
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\[
+|w_{0}|=\bar{0}
+\]
+
+\end_inset
+
+
+\begin_inset Formula 
+\[
+|w_{1}|^{2}\leq|w_{0}|^{2}+R^{2}=R^{2}
+\]
+
+\end_inset
+
+
+\begin_inset Formula 
+\[
+|w_{2}|^{2}\leq|w_{1}|^{2}+R^{2}\leq R^{2}+R^{2}=2R^{2}
+\]
+
+\end_inset
+
+
+\bar under
+Closure
+\bar default
+: Assume 
+\begin_inset Formula $|w_{t-1}|^{2}\leq(t-1)R^{2},$
+\end_inset
+
+thus 
+\begin_inset Formula $|w_{t}|^{2}\leq|w_{t-1}|^{2}+R^{2}\leq(t-1)R^{2}+R^{2}=tR^{2}$
+\end_inset
+
+ (**)
+\end_layout
+
+\begin_layout Standard
+
+\bar under
+Recap:
+\bar default
+ From (*) and (**) we know that:
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\[
+w_{t}\cdot w^{*}\geq t\cdot\gamma
+\]
+
+\end_inset
+
+
+\begin_inset Formula 
+\[
+|w_{t-1}|^{2}\leq tR^{2}
+\]
+
+\end_inset
+
+Therefore, after T mistakes:
+\begin_inset Formula 
+\[
+\gamma\cdot T\leq\overset{scalar}{w_{T+1}\cdot w^{*}}=|w_{T+1}\cdot w^{*}|\underset{Cauchy-Schwartz}{\leq}|w_{T+1}|\cdot\underset{=1|}{|w^{*}|}=|w_{T+1}|
+\]
+
+\end_inset
+
+
+\begin_inset Formula 
+\[
+\Downarrow
+\]
+
+\end_inset
+
+
+\begin_inset Formula 
+\[
+\gamma^{2}T^{2}\leq|w_{T+1}|^{2}\leq TR^{2}
+\]
+
+\end_inset
+
+
+\begin_inset Formula 
+\[
+\Downarrow
+\]
+
+\end_inset
+
+
+\begin_inset Formula 
+\[
+T\leq\frac{R^{2}}{\gamma^{2}}=O((\frac{{R}}{\gamma})^{2})
+\]
+
+\end_inset
+
+
+\begin_inset Formula 
+\[
+\blacksquare\\
+\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Subsection
+Stopping critertions
+\end_layout
+
+\begin_layout Standard
+The mistake bound holds only if the dataset is linearly separable.
+ If it’s not the case, one could define other critertions:
+\end_layout
+
+\begin_layout Itemize
+Approach 1: Consider the perceptron as an any-time algorithm.
+ When the user is out of time or resources, return the current weights.
+\end_layout
+
+\begin_layout Itemize
+Approach 2: After each update, calculate the accuracy, and remember the
+ weights corresponding to the highest accuracy:
+\end_layout
+
+\begin_layout Standard
+\begin_inset Graphics
+	filename pasted14.png
+	scale 35
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Subsection
+Kernel Perceptron
+\end_layout
+
+\begin_layout Standard
+While there exist datasets that aren’t linearly separable in a given form
+ (set of features), we can find a transformations to another space where
+ the points are linearly separable:
+\end_layout
+
+\begin_layout Standard
+\begin_inset Graphics
+	filename pasted15.png
+	scale 35
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Our next goal is to find transformations to spaces where our datasets are
+ linearly separable.
+ But firstly, we have to find a method to apply these transformations effectivel
+y.
+\end_layout
+
+\begin_layout Standard
+Let 
+\begin_inset Formula $\mathbb{R}^{n}$
+\end_inset
+
+ be the original features’ space and 
+\begin_inset Formula $\mathbb{R}^{m}$
+\end_inset
+
+ be the new features’ space.
+ Assume we have a transformation 
+\begin_inset Formula $\varphi:\mathbb{R}^{n}\to\mathbb{\mathbb{R}^{\text{m}}}$
+\end_inset
+
+.
+ In a low dimensions space, i.e.
+ if 
+\begin_inset Formula $m$
+\end_inset
+
+ is small, we cannot deal with more complex datasets.
+ Otherwise, In a high dimensions space, the computations become very slow.
+ I'll introduce you 
+\series bold
+\bar under
+
+\begin_inset Quotes eld
+\end_inset
+
+The Kernel Trick
+\begin_inset Quotes erd
+\end_inset
+
+
+\series default
+\bar default
+ - which helps us make these computations fast!
+\end_layout
+
+\begin_layout Standard
+Firstly, lets have a look at the learning rule:
+\end_layout
+
+\begin_layout Standard
+if 
+\begin_inset Formula $\hat{y}\ne y_{i:}:$
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+mbox{~~~~~~~~~~~~~~~~~~} 
+\end_layout
+
+\end_inset
+
+
+\begin_inset Formula $w\leftarrow w+yx$
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Thus, we can infer that the weights vector 𝑤 learned by the Perceptron’s
+ algorithm is a linear combination of all the data points: 
+\begin_inset Formula $w=\sum_{i}\alpha_{i}y_{i}x_{i}$
+\end_inset
+
+.
+ From the algorithm, we can infer that 
+\begin_inset Formula $\alpha_{i}$
+\end_inset
+
+is a 
+\begin_inset Quotes eld
+\end_inset
+
+mistake-counter
+\begin_inset Quotes erd
+\end_inset
+
+, where 
+\begin_inset Formula $\alpha_{i}$
+\end_inset
+
+ is means 
+\begin_inset Quotes eld
+\end_inset
+
+how many times the perceptron made a mistake on sample 
+\begin_inset Formula $x_{i}$
+\end_inset
+
+.
+ We can rewrite the prediction rule of a new observation 
+\begin_inset Formula $x'$
+\end_inset
+
+ as: 
+\begin_inset Formula $\hat{y}=sign[(\sum_{i}\alpha_{i}y_{i}x_{i})^{T}x']=sign[\sum_{i}\alpha_{i}y_{i}x_{i}^{T}x']$
+\end_inset
+
+.
+ In the new features' space, the prediction rule would become: 
+\begin_inset Formula $\hat{y}=sign[\sum_{i}\alpha_{i}y_{i}\varphi^{T}(x_{i})\varphi(x')]$
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+This leads us to the dual problem, that is finding the 
+\begin_inset Formula $\alpha_{i}$
+\end_inset
+
+'s.
+ The new learning algorithm would loop thru the samples and make predictions,
+ but now it will update the mistake counters vector 
+\begin_inset Formula $\alpha$
+\end_inset
+
+, rather than updating a weights vector 
+\begin_inset Formula $m$
+\end_inset
+
+.
+\end_layout
+
+\begin_layout Standard
+
+\bar under
+Observation:
+\bar default
+ We can define a threshold 
+\begin_inset Formula $s$
+\end_inset
+
+, and during learning we'll zero (and consider dropping samples from the
+ dataset since those samples are probably outliers) any mistake-counter
+ that reaches a value above it, i.e.:
+\end_layout
+
+\begin_layout Standard
+if 
+\begin_inset Formula $\alpha_{i}\geq s:$
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+mbox{~~~~~~~~~~~~~~~~~~} 
+\end_layout
+
+\end_inset
+
+
+\begin_inset Formula $\alpha_{i}\leftarrow0$
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+mbox{~~~~~~~~~~~~~~~~~~} 
+\end_layout
+
+\end_inset
+
+drop 
+\begin_inset Formula $x_{i}$
+\end_inset
+
+ from the dataset
+\end_layout
+
+\begin_layout Standard
+Now back to our mission, it makes it possible to get the same results as
+ if you added many features, without adding them in practice.
+ Usually, we define a kernel 
+\begin_inset Formula $K$
+\end_inset
+
+ such that 
+\begin_inset Formula $K(x,y)=\varphi^{T}(x)\varphi(y)$
+\end_inset
+
+ and find a direct solution that doesn't involve any transformation and
+ calculations in a higher dimention space.
+ 
+\bar under
+Example:
+\bar default
+
+\begin_inset Formula 
+\[
+\varphi(u)=\varphi([\begin{bmatrix}u_{1}\\
+u_{2}
+\end{bmatrix})=\begin{bmatrix}1\\
+\sqrt{2}u_{1}\\
+\sqrt{2}u_{2}\\
+\sqrt{2}u_{1}u_{2}\\
+u_{1}^{2}\\
+u_{2}^{2}
+\end{bmatrix}
+\]
+
+\end_inset
+
+
+\begin_inset Formula 
+\[
+\Downarrow
+\]
+
+\end_inset
+
+
+\begin_inset Formula 
+\[
+\varphi^{T}(u)\varphi(v)=1+2u_{1}v_{1}+2u_{2}v_{2}+2u_{1}u_{2}v_{1}v_{2}+u_{1}^{2}v_{1}^{2}+u_{2}^{2}v_{2}^{2}=(1+u^{T}v)^{2}
+\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Note that computing the dot product 
+\begin_inset Formula $u^{T}v$
+\end_inset
+
+ in the original features' space usually less expensive than computing the
+ dot product in the transformed space.
+ However, it appears that there exist transformation that 
+\begin_inset Quotes eld
+\end_inset
+
+The Kernel Trick
+\begin_inset Quotes erd
+\end_inset
+
+ could not be applied.
+ Actually, the trick holds only if the the matrix 
+\begin_inset Formula $K$
+\end_inset
+
+ that corresponds to the inner product 
+\begin_inset Formula $\langle u,v\rangle_{k}=\varphi^{T}(u)\varphi(v)$
+\end_inset
+
+ is positive semi-definite.
+ This is a private case of Mercer's Theorm.
+\end_layout
+
+\begin_layout Standard
+In practive, engineers and scientists use some sidely used kernels, for
+ example:
+\end_layout
+
+\begin_layout Enumerate
+\begin_inset Formula $K(x,y)=(x^{T}y+1)^{p}$
+\end_inset
+
+ - Polunomial kernel of degree 
+\begin_inset Formula $p$
+\end_inset
+
+
+\end_layout
+
+\begin_layout Enumerate
+\begin_inset Formula $K(x,y)=e^{-\frac{1}{2\sigma^{2}}|x-y|^{2}}$
+\end_inset
+
+- Gaussian kernel
+\end_layout
+
+\begin_layout Enumerate
+\begin_inset Formula $K(x,y)=e^{-\gamma|x-y|^{2}}$
+\end_inset
+
+- RBF kernel (Radial basis function)
+\end_layout
+
+\begin_layout Enumerate
+\begin_inset Formula $K(x,y)=tanh(\eta x^{T}y+\theta)$
+\end_inset
+
+ - Sigmoid kernel
+\end_layout
+
+\begin_layout Subsection
+The new algorithm
+\end_layout
+
+\begin_layout Standard
+After considering all the outcomes of the last formulations, we can define
+ the new learnig algorithm and prediction rule as:
+\end_layout
+
+\begin_layout Standard
+
+\bar under
+Learning:
+\end_layout
+
+\begin_layout Standard
+Initialize a mistake-counter vector 
+\begin_inset Formula $\alpha\leftarrow\bar{0}$
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+while a stopping criterion isn't met:
+\end_layout
+
+\begin_layout Standard
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+mbox{~~~~~~} 
+\end_layout
+
+\end_inset
+
+Iterate over all 
+\begin_inset Formula $(x_{j},y_{j})\in X\times Y:$
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+mbox{~~~~~~~~~~~~} 
+\end_layout
+
+\end_inset
+
+
+\begin_inset Formula $\hat{y}=sign(\sum_{i}\alpha_{i}y_{i}K(x_{i},x_{j}))$
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+mbox{~~~~~~~~~~~~} 
+\end_layout
+
+\end_inset
+
+if 
+\begin_inset Formula $\hat{y}\ne y:$
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+mbox{~~~~~~~~~~~~~~~~~~} 
+\end_layout
+
+\end_inset
+
+
+\begin_inset Formula $\alpha_{j}\leftarrow\alpha_{j}+1$
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+
+\bar under
+Prediction:
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\[
+\hat{y}=sign[\sum_{i}\alpha_{i}y_{i}K(x_{i},x')]
+\]
+
+\end_inset
+
+
+\end_layout
+
+\end_body
+\end_document
